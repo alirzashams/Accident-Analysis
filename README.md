@@ -22,8 +22,8 @@ UK-Accident-Analysis/
 │
 ├── notebooks/
 │   ├── preprocess.py        # اسکریپت پاکسازی و فیلتر مختصات
-│   ├── 02_spatial_analysis.ipynb # خوشه‌بندی DBSCAN و تراکم KDE
-│   └── 03_risk_index.ipynb       # محاسبه شاخص خطر و رسم نقشه نهایی
+│   ├── spatial_analysis.ipynb # خوشه‌بندی DBSCAN و تراکم KDE
+│   └── risk_index.ipynb       # محاسبه شاخص خطر و رسم نقشه نهایی
 │   └── risk_map.html             # خروجی نقشه تعاملی
 │
 ├── requirements.txt         # لیست کتابخانه‌های مورد نیاز
