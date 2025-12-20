@@ -1,30 +1,43 @@
-# UK Road Accident Analysis & Risk Index 🚗💥
+# 🚗 UK Road Accident Analysis & Prediction System
+
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![Status](https://img.shields.io/badge/Status-Completed-green)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ## 📌 Project Overview | معرفی پروژه
-این پروژه یک سیستم تحلیل جامع برای **داده‌های تصادفات جاده‌ای بریتانیا** است. هدف اصلی، فراتر رفتن از آمار ساده و ایجاد یک **"شاخص خطر" (Risk Index)** هوشمند است که با ترکیب شدت تصادف، تراکم مکانی و شرایط محیطی، نقاط پرخطر را شناسایی و رتبه‌بندی می‌کند.
+این پروژه یک سیستم جامع تحلیل داده و هوش مصنوعی است که بر روی **داده‌های تصادفات جاده‌ای بریتانیا** انجام شده است. هدف ما فراتر از تحلیل آماری ساده بوده و شامل شناسایی نقاط حادثه‌خیز (Hotspots)، محاسبه شاخص خطر (Risk Index) و **پیش‌بینی شدت تصادفات** با استفاده از الگوریتم‌های یادگیری ماشین است.
 
-در این پروژه از تکنیک‌های **یادگیری ماشین بدون نظارت (Unsupervised Learning)** و تحلیل مکانی استفاده شده است.
+پروژه در ۴ فاز اصلی پیاده‌سازی شده است که مستندات کامل هر بخش در پوشه `docs/` موجود است.
 
-## 🚀 Key Features | قابلیت‌های کلیدی
-* **Data Cleaning & Geo-Filtering:** پاکسازی داده‌ها و فیلتر کردن مختصات جغرافیایی (حذف داده‌های پرت خارج از بریتانیا).
-* **Hotspot Detection (DBSCAN):** شناسایی کانون‌های تصادف با استفاده از الگوریتم خوشه‌بندی مبتنی بر چگالی.
-* **Density Estimation (KDE):** محاسبه شدت تراکم تصادفات در هر نقطه.
-* **Risk Index Calculation:** محاسبه نمره خطر (۰ تا ۱۰۰) برای هر نقطه بر اساس فرمول چند متغیره.
-* **Interactive Maps:** بصری‌سازی نتایج روی نقشه تعاملی با استفاده از `Folium`.
+---
+
+## 🚀 Key Features | ویژگی‌های کلیدی
+* **Data Cleaning:** پاکسازی پیشرفته و فیلتر کردن مختصات جغرافیایی پرت.
+* **Spatial Clustering (DBSCAN):** شناسایی کانون‌های خطر و حذف نویزها.
+* **Density Estimation (KDE):** تخمین تراکم وقوع تصادفات در سطح نقشه.
+* **Risk Index Scoring:** محاسبه نمره ریسک اختصاصی برای هر نقطه (ترکیبی از شدت، تراکم و محیط).
+* **AI Prediction (XGBoost):** پیش‌بینی شدت تصادف (سطحی/جدی/کشنده) با دقت بالا.
+
+---
 
 ## 📂 Project Structure | ساختار فایل‌ها
+
 ```text
-UK-Accident-Analysis/
+accident-analysis/
 │
-├── data/
-│   ├── raw/                 # داده‌های خام اولیه
-│   ├── processed/           # داده‌های تمیز شده و خروجی‌های تحلیل
+├── data/                    # داده‌های خام و پردازش شده
+├── notebooks/               # کدهای پروژه (ژوپیتر نوت‌بوک‌ها)
+│   ├── preprocess.py                 # اسکریپت پاکسازی
+│   ├── spatial_analysis.ipynb     # تحلیل مکانی
+│   ├── risk_index.ipynb           # شاخص خطر
+│   ├── prediction.ipynb           # مدل پیش‌بینی
+│   └── risk_map.html                 # خروجی نقشه
 │
-├── notebooks/
-│   ├── preprocess.py        # اسکریپت پاکسازی و فیلتر مختصات
-│   ├── spatial_analysis.ipynb # خوشه‌بندی DBSCAN و تراکم KDE
-│   └── risk_index.ipynb       # محاسبه شاخص خطر و رسم نقشه نهایی
-│   └── risk_map.html             # خروجی نقشه تعاملی
+├── docs/                    # 📄 مستندات کامل پروژه
+│   ├── Preprocessing.md           # فاز ۱: پاکسازی
+│   ├── Spatial_Analysis.md        # فاز ۲: تحلیل مکانی
+│   ├── Risk_Index.md              # فاز ۳: شاخص خطر
+│   └── Prediction.md        # فاز ۴: پیش‌بینی هوشمند
 │
-├── requirements.txt         # لیست کتابخانه‌های مورد نیاز
-└── README.md                # توضیحات پروژه
+├── requirements.txt         # کتابخانه‌های مورد نیاز
+└── README.md                # همین فایل
