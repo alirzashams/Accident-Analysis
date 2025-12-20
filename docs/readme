@@ -1,1 +1,7 @@
-
+accident-analysis/
+├── docs/
+│   ├── 01_Preprocessing.md
+│   ├── 02_Spatial_Analysis.md
+│   ├── 03_Risk_Index.md
+│   └── 04_Prediction_Model.md
+...
