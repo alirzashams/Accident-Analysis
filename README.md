@@ -1,7 +1,7 @@
 # 🚗 UK Road Accident Analysis & Prediction System
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Status](https://img.shields.io/badge/Status-Completed-green)
+![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ## 📌 Project Overview | معرفی پروژه
