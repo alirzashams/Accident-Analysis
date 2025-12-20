@@ -2,4 +2,7 @@ pandas
 numpy
 matplotlib
 seaborn
+
 jupyter
+sklearn
+folium
