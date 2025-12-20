@@ -2,7 +2,6 @@ pandas
 numpy
 matplotlib
 seaborn
-
 jupyter
-sklearn
+scikit-learn
 folium
