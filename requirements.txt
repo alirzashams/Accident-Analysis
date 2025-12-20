@@ -5,4 +5,4 @@ seaborn
 jupyter
 scikit-learn
 folium
-os
+xgboost
