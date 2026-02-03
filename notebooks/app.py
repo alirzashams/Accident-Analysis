@@ -1,41 +1,85 @@
-
 import streamlit as st
 import pandas as pd
+import numpy as np
+import pickle
+import lightgbm as lgb
 import xgboost as xgb
 
-st.title("پیش‌بینی شدت تصادفات رانندگی")
+# تنظیمات اولیه صفحه
+st.set_page_config(page_title="پیش‌بینی شدت تصادفات", layout="wide")
 
-# ساخت سایدبار برای دریافت ورودی‌ها
-st.sidebar.header("ورودی‌های مدل")
+st.title("🚗 سامانه هوشمند پیش‌بینی شدت تصادفات رانندگی")
+st.markdown("این برنامه با استفاده از مدل‌های یادگیری ماشین، شدت احتمالی تصادف را پیش‌بینی می‌کند.")
 
-def user_input_features():
-    day_of_week = st.sidebar.selectbox("روز هفته", (0, 1, 2, 3, 4, 5, 6))
-    road_type = st.sidebar.selectbox("نوع جاده", (0, 1, 2, 3))
-    speed_limit = st.sidebar.slider("محدودیت سرعت", 10, 120, 50)
-    light_conditions = st.sidebar.selectbox("وضعیت نور", (0, 1, 2, 3))
-    weather = st.sidebar.selectbox("وضعیت آب و هوا", (0, 1, 2, 3, 4))
-    hour = st.sidebar.slider("ساعت", 0, 23, 12)
-    
-    data = {
-        'Day_of_Week': day_of_week,
-        'Road_Type': road_type,
-        'Speed_limit': speed_limit,
-        'Light_Conditions': light_conditions,
-        'Weather_Conditions': weather,
-        'Hour': hour,
-        # سایر ویژگی‌هایی که در مدل استفاده کردید را اینجا اضافه کنید
-    }
-    return pd.DataFrame(data, index=[0])
+# ۱. بارگذاری مدل آموزش‌دیده
+@st.cache_resource
+def load_trained_model():
+    try:
+        # فایل باید در کنار app.py باشد
+        with open('accident_model.pkl', 'rb') as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return None
 
-df_input = user_input_features()
+model = load_trained_model()
 
-st.subheader("پارامترهای ورودی انتخاب شده:")
-st.write(df_input)
+if model is None:
+    st.error("❌ فایل مدل (accident_model.pkl) یافت نشد. ابتدا نوت‌بوک را اجرا کنید تا فایل مدل ساخته شود.")
+else:
+    # ۲. طراحی رابط کاربری ورودی‌ها در سایدبار
+    st.sidebar.header("📋 مشخصات تصادف را وارد کنید")
 
-# بارگذاری مدل (باید قبلاً مدل را به صورت فایل ذخیره کرده باشید)
-# model = joblib.load('accident_model.pkl')
+    def get_user_inputs():
+        # دریافت ویژگی‌های زمانی و محیطی
+        day = st.sidebar.selectbox("روز هفته", options=[0,1,2,3,4,5,6], 
+                                   format_func=lambda x: ["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنج‌شنبه","جمعه"][x])
+        road_type = st.sidebar.selectbox("نوع جاده (کد شده)", [0, 1, 2, 3])
+        speed = st.sidebar.slider("محدودیت سرعت", 10, 120, 50)
+        light = st.sidebar.selectbox("وضعیت نور (کد شده)", [0, 1, 2, 3])
+        weather = st.sidebar.selectbox("وضعیت آب و هوا (کد شده)", [0, 1, 2, 3])
+        area = st.sidebar.radio("نوع منطقه", [0, 1], format_func=lambda x: "شهری" if x==1 else "روستایی")
+        hour = st.sidebar.slider("ساعت وقوع (۰-۲۳)", 0, 23, 12)
+        
+        # مقادیر ثابت برای ویژگی‌های خوشه‌بندی و تراکم (Cluster/Density)
+        cluster = -1 
+        density = 1.0
 
-st.subheader("نتیجه پیش‌بینی:")
-# prediction = model.predict(df_input)
-# st.write(f"شدت تصادف پیش‌بینی شده: {prediction}")
-st.info("نکته: برای نمایش نتیجه، ابتدا مدل خود را آموزش داده و ذخیره کنید.")
+        # تشکیل دیتافریم با رعایت دقیق ترتیب ستون‌ها
+        features_dict = {
+            'Day_of_Week': day,
+            'Road_Type': road_type,
+            'Speed_limit': speed,
+            'Light_Conditions': light,
+            'Weather_Conditions': weather,
+            'Urban_or_Rural_Area': area,
+            'Cluster': cluster,
+            'Density': density,
+            'Hour': hour
+        }
+        return pd.DataFrame([features_dict])
+
+    input_df = get_user_inputs()
+
+    # ۳. نمایش اطلاعات ورودی به کاربر
+    st.subheader("📍 مشخصات ورودی:")
+    st.table(input_df)
+
+    # ۴. دکمه پیش‌بینی و نمایش نتیجه
+    if st.button("🚀 تحلیل و پیش‌بینی"):
+        prediction = model.predict(input_df)
+        
+        # نگاشت اعداد به دسته‌های متنی
+        severity_map = {0: 'خفیف (Slight)', 1: 'شدید (Serious)', 2: 'مرگبار (Fatal)'}
+        result_text = severity_map.get(prediction[0], "نامشخص")
+        
+        # نمایش نتیجه با استایل‌های مختلف بر اساس شدت
+        st.write("---")
+        if prediction[0] == 0:
+            st.success(f"### نتیجه پیش‌بینی: **{result_text}**")
+        elif prediction[0] == 1:
+            st.warning(f"### نتیجه پیش‌بینی: **{result_text}**")
+        else:
+            st.error(f"### نتیجه پیش‌بینی: **{result_text}**")
+
+st.markdown("---")
+st.caption("توسعه یافته توسط تیم تحلیل تصادفات | ۲۰۲۶")
