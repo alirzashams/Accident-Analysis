@@ -7,3 +7,4 @@ scikit-learn
 folium
 xgboost
 lightgbm
+streamlit
