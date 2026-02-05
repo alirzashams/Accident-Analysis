@@ -1,10 +1,6 @@
 # 🚗 Road Accident Severity Prediction System (Web App)
 ### سامانه هوشمند پیش‌بینی شدت تصادفات جاده‌ای
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-red)
-![Status](https://img.shields.io/badge/Status-Deployment%20Ready-success)
-
 ## 📌 Overview (معرفی)
 This web application is the deployment interface for the **Road Accident Analysis** project. It leverages trained Machine Learning models (**LightGBM** and **XGBoost**) to predict the severity of traffic accidents based on user-provided environmental and temporal inputs.
 
@@ -26,13 +22,3 @@ This web application is the deployment interface for the **Road Accident Analysi
 - **📊 نمودارهای تعاملی:** نمایش احتمال وقوع هر کلاس با نمودارهای Plotly.
 - **💡 سیستم پیشنهاددهنده:** ارائه راهکارهای هوشمند (مانند کاهش سرعت یا اصلاح روشنایی) برای کاهش ریسک مرگبار.
 
----
-
-## 🚀 Installation & Setup (نصب و اجرا)
-
-### 1. Prerequisites (پیش‌نیازها)
-Make sure you have Python installed. Then, install the required libraries:
-ابتدا مطمئن شوید پایتون نصب است. سپس کتابخانه‌های مورد نیاز را نصب کنید:
-
-```bash
-pip install -r requirements.txt
