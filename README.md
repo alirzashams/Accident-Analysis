@@ -1,26 +1,35 @@
+<div align="center">
+
 # Architecting a Data-Driven Framework for Road Safety
 ### Geospatial Hotspot Analysis and Predictive Severity Modeling
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat)
-![Status](https://img.shields.io/badge/Status-Completed-success)
+![Python](https://img.shields.io/badge/Python-3.8%2B-007ACC?style=for-the-badge&logo=python&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
+
+</div>
+
+---
 
 ## Abstract
-**English:**
-This repository contains the implementation of a B.Sc. dissertation titled *"Architecting a Data-Driven Framework for Road Safety"*. Traditional traffic analysis often relies on retrospective statistics. This project introduces a hybrid proactive system that integrates **Density-Based Spatial Clustering (DBSCAN)** with **Gradient Boosting Decision Trees (LightGBM & XGBoost)**. The primary objective is to engineer a robust mechanism for identifying high-density accident zones and predicting accident severity based on real-time environmental and temporal variables.
 
-**فارسی:**
-این مخزن شامل پیاده‌سازی پروژه پایانی کارشناسی با عنوان *"طراحی چارچوب داده‌محور برای ایمنی راه‌ها"* است. تحلیل‌های ترافیکی سنتی اغلب مبتنی بر آمارهای گذشته‌نگر هستند. این پژوهش یک سیستم ترکیبی پیش‌بینانه را معرفی می‌کند که **خوشه‌بندی مکانی مبتنی بر چگالی (DBSCAN)** را با **درخت‌های تصمیم گرادیان بوستینگ (LightGBM & XGBoost)** ادغام می‌نماید. هدف اصلی، مهندسی یک مکانیزم مقاوم برای شناسایی کانون‌های پرخطر و پیش‌بینی شدت تصادفات بر اساس متغیرهای محیطی و زمانی است.
+> **English**
+>
+> This repository contains the implementation of a B.Sc. dissertation titled *"Architecting a Data-Driven Framework for Road Safety"*. Traditional traffic analysis often relies on retrospective statistics. This project introduces a hybrid proactive system that integrates **Density-Based Spatial Clustering (DBSCAN)** with **Gradient Boosting Decision Trees (LightGBM & XGBoost)**. The primary objective is to engineer a robust mechanism for identifying high-density accident zones and predicting accident severity based on real-time environmental and temporal variables.
+
+> **فارسی**
+>
+> این مخزن شامل پیاده‌سازی پروژه پایانی کارشناسی با عنوان *"طراحی چارچوب داده‌محور برای ایمنی راه‌ها"* است. تحلیل‌های ترافیکی سنتی اغلب مبتنی بر آمارهای گذشته‌نگر هستند. این پژوهش یک سیستم ترکیبی پیش‌بینانه را معرفی می‌کند که **خوشه‌بندی مکانی مبتنی بر چگالی (DBSCAN)** را با **درخت‌های تصمیم گرادیان بوستینگ (LightGBM & XGBoost)** ادغام می‌نماید. هدف اصلی، مهندسی یک مکانیزم مقاوم برای شناسایی کانون‌های پرخطر و پیش‌بینی شدت تصادفات بر اساس متغیرهای محیطی و زمانی است.
 
 ---
 
 ## Methodology and Technical Approach
 
-The research framework is delineated into four technical phases:
+The research framework is delineated into four subsequent technical phases:
 
 ### 1. Advanced Data Engineering
-Implementation of a rigorous preprocessing pipeline to sanitize ~25,000 raw GPS records.
+Implementation of a rigorous preprocessing pipeline to sanitize over 25,000 raw GPS records.
 * **Techniques:** Outlier detection via Bounding Box filtering, Temporal decomposition.
-* **Outcome:** A cleansed dataset with high spatial integrity.
+* **Outcome:** A cleansed dataset ensuring high spatial integrity.
 
 ### 2. Geospatial Intelligence
 Utilization of unsupervised learning to detect non-linear accident hotspots.
@@ -40,10 +49,12 @@ Training ensemble learning models to classify accident severity (Slight, Serious
 
 ## Repository Architecture
 
+The project is structured to separate concerns between data, documentation, research notebooks, and deployment code.
+
 ```text
 accident-analysis/
 │
-├── app/                       # Deployment Module
+├── app/                       # Deployment Module (Web App)
 │   ├── app.py                 # Streamlit Dashboard Interface
 │   ├── lgb_model.pkl          # Serialized LightGBM Model
 │   └── xgb_model.pkl          # Serialized XGBoost Model
@@ -57,7 +68,7 @@ accident-analysis/
 │   ├── Risk_Index.md          # Mathematical Formulation of Risk
 │   └── Prediction.md          # Model Evaluation Metrics
 │
-├── notebooks/                 # Research & Development
+├── notebooks/                 # Research & Development (Lab)
 │   ├── 1_preprocess.ipynb     # Data Cleaning Pipeline
 │   ├── 2_spatial_analysis.ipynb # DBSCAN Implementation
 │   ├── 3_risk_index.ipynb     # Risk Calculation Logic
@@ -65,36 +76,3 @@ accident-analysis/
 │
 ├── requirements.txt           # Dependency Manifest
 └── README.md                  # Project Overview
-```
-Execution Guide
-1. Environment Setup
-Clone the repository and install the required dependencies:
-
-Bash
-git clone [https://github.com/alirzashams/accident-analysis.git](https://github.com/alirzashams/accident-analysis.git)
-cd accident-analysis
-pip install -r requirements.txt
-2. Deployment
-To launch the interactive analytical dashboard:
-
-Bash
-cd app
-streamlit run app.py
-3. Reproducibility
-The Jupyter notebooks located in the notebooks/ directory correspond to the sequential phases of the research. They can be executed to reproduce the data cleaning, clustering, and training processes.
-
-Experimental Results
-Model Performance: The LightGBM classifier achieved a Macro F1-Score of 0.76, demonstrating robust capability in detecting minority classes (Fatal accidents).
-
-Feature Importance: Analysis reveals that Speed Limit and Spatial Cluster ID are the most significant determinants of accident severity.
-
-Credits and Affiliation
-Author: Alireza Shams
-
-Supervisor: Dr. Keyvan Borna
-
-Institution: Faculty of Mathematics and Computer Science, Kharazmi University
-
-Date: Fall 2025
-
-<div align="center"> <sub>© 2025 Alireza Shams. All Rights Reserved.</sub> </div>
