@@ -1,10 +1,11 @@
+streamlit
 pandas
 numpy
-matplotlib
-seaborn
-jupyter
 scikit-learn
-folium
-xgboost
 lightgbm
-streamlit
+plotly
+folium
+geopandas
+seaborn
+matplotlib
+xgboost
