@@ -65,6 +65,7 @@ accident-analysis/
 │
 ├── requirements.txt           # Dependency Manifest
 └── README.md                  # Project Overview
+```
 Execution Guide
 1. Environment Setup
 Clone the repository and install the required dependencies:
