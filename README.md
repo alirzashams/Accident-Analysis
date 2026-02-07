@@ -1,5 +1,4 @@
 
-```markdown
 <div align="center">
 
 # Architecting a Data-Driven Framework for Road Safety
