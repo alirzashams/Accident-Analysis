@@ -1,9 +1,12 @@
+
+```markdown
 <div align="center">
 
 # Architecting a Data-Driven Framework for Road Safety
 ### Geospatial Hotspot Analysis and Predictive Severity Modeling
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-007ACC?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
 </div>
@@ -76,3 +79,60 @@ accident-analysis/
 │
 ├── requirements.txt           # Dependency Manifest
 └── README.md                  # Project Overview
+
+```
+
+---
+
+## Execution Guide
+
+Follow these steps to set up the environment and launch the application.
+
+### 1. Environment Setup
+
+Clone the repository and install the required dependencies:
+
+```bash
+git clone [https://github.com/alirzashams/accident-analysis.git](https://github.com/alirzashams/accident-analysis.git)
+cd accident-analysis
+pip install -r requirements.txt
+
+```
+
+### 2. Deployment
+
+To launch the interactive analytical dashboard:
+
+```bash
+cd app
+streamlit run app.py
+
+```
+
+### 3. Reproducibility
+
+The Jupyter notebooks located in the `notebooks/` directory correspond to the sequential phases of the research. They can be executed sequentially to reproduce the data cleaning, clustering, and training processes.
+
+---
+
+## Experimental Results
+
+* **Model Performance:** The LightGBM classifier achieved a **Macro F1-Score of 0.76**, demonstrating robust capability in detecting minority classes (Fatal accidents).
+* **Feature Importance:** Analysis reveals that **Speed Limit** and **Spatial Cluster ID** are the most significant determinants of accident severity.
+
+---
+
+<div align="center">
+
+### Credits and Affiliation
+
+**Author:** Alireza Shams | **Supervisor:** Dr. Keyvan Borna
+Faculty of Mathematics and Computer Science, Kharazmi University
+Fall 2025
+
+</div>
+
+```
+
+```
+
