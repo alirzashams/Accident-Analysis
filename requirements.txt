@@ -1,0 +1,25 @@
+# --- Core Data Science ---
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+
+# --- Machine Learning Models ---
+xgboost
+lightgbm
+joblib
+
+# --- Spatial Analysis (Maps & DBSCAN) ---
+shapely
+geopandas
+folium
+
+# --- Web Application ---
+streamlit
+
+# --- Data Acquisition ---
+kagglehub
+
+# --- Utilities ---
+tqdm
