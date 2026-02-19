@@ -6,286 +6,216 @@ import plotly.graph_objects as go
 import os
 
 # ==========================================
-# 1. Project Config & Styles
+# 1. پیکربندی صفحه و استایل‌های آکادمیک
 # ==========================================
 st.set_page_config(
-    page_title="Road Safety Analysis | Kharazmi Uni",
-    page_icon="🚦",
+    page_title="Accident Risk AI | Kharazmi Uni", 
+    page_icon="🚦", 
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Text Resources (Persian/English) matching the thesis context
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# دیکشنری متون برای پشتیبانی حرفه‌ای از دو زبان
 TEXTS = {
     'fa': {
-        'dir': 'rtl',
-        'font': 'B Nazanin, Tahoma',
-        'header_title': "تحلیل و پیش‌بینی شدت تصادفات جاده‌ای",
-        'header_subtitle': "پروژه پایانی کارشناسی | دانشگاه خوارزمی",
-        'project_desc': """
-        <div style="text-align: justify;">
-        در این پژوهش، با بهره‌گیری از الگوریتم‌های یادگیری ماشین <b>(LightGBM & XGBoost)</b> و تحلیل داده‌های کلان ترافیکی بریتانیا، 
-        یک چارچوب هوشمند برای تخمین شدت سوانح رانندگی توسعه داده شده است. 
-        این سامانه قادر است بر اساس پارامترهای محیطی و زمانی، سطح ریسک حادثه را پیش‌بینی نماید.
-        </div>
-        """,
-        'sb_title': "تنظیمات پارامترهای ورودی",
+        'dir': 'rtl', 'font': 'Tahoma',
+        'header': "سامانه هوشمند پیش‌بینی شدت تصادفات جاده‌ای",
+        'subheader': "پروژه پایانی کارشناسی | تحلیل مبتنی بر یادگیری ماشین",
+        'sb_title': "پارامترهای محیطی و ترافیکی",
+        'lbl_month': "ماه وقوع حادثه",
         'lbl_day': "روز هفته",
-        'lbl_road': "نوع جاده",
-        'lbl_speed': "حد مجاز سرعت (مایل/ساعت)",
-        'lbl_light': "وضعیت روشنایی",
-        'lbl_weather': "شرایط جوی",
-        'lbl_area': "موقعیت مکانی",
-        'lbl_hour': "ساعت وقوع حادثه",
-        'lbl_comp': "فعال‌سازی مدل مقایسه‌ای (XGBoost)",
-        
-        # Options matching LabelEncoder mapping in notebook
-        'days': ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
-        'roads': {'شهری/فرعی': 1, 'جاده دوطرفه/اصلی': 2, 'بزرگراه': 3, 'نامشخص': 0},
-        'lights': {'روز (روشن)': 1, 'تاریک (با چراغ)': 2, 'تاریک (بدون چراغ)': 3, 'نامشخص': 0},
-        'weathers': {'صاف/آفتابی': 1, 'بارانی': 2, 'برفی': 3, 'مه‌آلود': 4, 'نامشخص': 0},
-        'areas': {'شهری': 1, 'روستایی': 2},
-        
-        'res_main': "نتایج مدل اصلی (LightGBM)",
-        'res_comp': "نتایج مدل مقایسه‌ای (XGBoost)",
-        'risk_levels': ['خسارتی/سطحی', 'جرحی/جدی', 'فوت/مرگبار'],
-        'risk_msgs': [
-            "وضعیت کم‌خطر (Slight)",
-            "وضعیت پرخطر (Serious) - نیاز به احتیاط",
-            "وضعیت بحرانی (Fatal) - ریسک بسیار بالا"
-        ],
-        'rec_head': "راهکارهای پیشنهادی جهت کاهش ریسک",
-        'rec_speed': "📉 <b>تحلیل حساسیت:</b> کاهش سرعت خودرو به <b>{0}</b>، احتمال وقوع حادثه مرگبار را <b>{1:.1f}٪</b> کاهش می‌دهد.",
-        'rec_light': "💡 <b>پیشنهاد زیرساختی:</b> تأمین روشنایی در این محور، ریسک فوت را تا <b>{0:.1f}٪</b> تقلیل می‌دهد.",
-        'footer': "دانشجو: علیرضا شمس | استاد راهنما: دکتر کیوان برنا | پاییز ۱۴۰۴"
+        'btn_predict': "اجرای مدل و تحلیل ریسک",
+        'res_head': "توزیع احتمالات خروجی مدل",
+        'metrics_title': "شاخص‌های اطمینان",
+        'risk_levels': ['مرگبار (Fatal)', 'جدی (Serious)', 'سطحی (Slight)'],
+        'footer': "طراحی و توسعه: علیرضا شمس | دانشگاه خوارزمی",
+        'days': {1:"دوشنبه", 2:"سه‌شنبه", 3:"چهارشنبه", 4:"پنج‌شنبه", 5:"جمعه", 6:"شنبه", 7:"یکشنبه"},
+        'months': {1:"ژانویه", 2:"فوریه", 3:"مارس", 4:"آوریل", 5:"مه", 6:"ژوئن", 7:"ژوئیه", 8:"اوت", 9:"سپتامبر", 10:"اکتبر", 11:"نوامبر", 12:"دسامبر"}
     },
     'en': {
-        'dir': 'ltr',
-        'font': 'sans-serif',
-        'header_title': "Road Accident Severity Prediction",
-        'header_subtitle': "B.Sc. Final Project | Kharazmi University",
-        'project_desc': """
-        This project leverages machine learning algorithms <b>(LightGBM & XGBoost)</b> to analyze traffic accident patterns. 
-        The system predicts accident severity based on environmental and temporal features extracted from the UK road safety dataset.
-        """,
-        'sb_title': "Input Parameters",
+        'dir': 'ltr', 'font': 'sans-serif',
+        'header': "Road Accident Severity Prediction AI",
+        'subheader': "B.Sc. Final Project | Machine Learning Analysis",
+        'sb_title': "Environmental & Traffic Parameters",
+        'lbl_month': "Month",
         'lbl_day': "Day of Week",
-        'lbl_road': "Road Type",
-        'lbl_speed': "Speed Limit (mph)",
-        'lbl_light': "Light Conditions",
-        'lbl_weather': "Weather Conditions",
-        'lbl_area': "Area Type",
-        'lbl_hour': "Time of Day",
-        'lbl_comp': "Enable Model Comparison (XGBoost)",
-        
-        'days': ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        'roads': {'Urban/Single': 1, 'Dual Carriageway': 2, 'Motorway': 3, 'Unknown': 0},
-        'lights': {'Daylight': 1, 'Darkness (Lit)': 2, 'Darkness (No Lights)': 3, 'Unknown': 0},
-        'weathers': {'Fine': 1, 'Raining': 2, 'Snowing': 3, 'Fog': 4, 'Unknown': 0},
-        'areas': {'Urban': 1, 'Rural': 2},
-        
-        'res_main': "Primary Model Analysis (LightGBM)",
-        'res_comp': "Comparative Model (XGBoost)",
-        'risk_levels': ['Slight', 'Serious', 'Fatal'],
-        'risk_msgs': [
-            "Low Risk (Slight)",
-            "High Risk (Serious)",
-            "Critical Risk (Fatal)"
-        ],
-        'rec_head': "Safety Improvement Recommendations",
-        'rec_speed': "📉 <b>Sensitivity Analysis:</b> Reducing speed to <b>{0}</b> decreases fatal risk by <b>{1:.1f}%</b>.",
-        'rec_light': "💡 <b>Infrastructure:</b> Installing street lights reduces fatal risk by <b>{0:.1f}%</b>.",
-        'footer': "Student: Alireza Shams | Supervisor: Dr. Keyvan Borna | Fall 2025"
+        'btn_predict': "Run Model & Analyze Risk",
+        'res_head': "Model Probability Distribution",
+        'metrics_title': "Confidence Metrics",
+        'risk_levels': ['Fatal', 'Serious', 'Slight'],
+        'footer': "Developed by: Alireza Shams | Kharazmi University",
+        'days': {1:"Monday", 2:"Tuesday", 3:"Wednesday", 4:"Thursday", 5:"Friday", 6:"Saturday", 7:"Sunday"},
+        'months': {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
     }
 }
 
-# Language Selector
-lang_opt = st.sidebar.radio("Language / زبان", ['فارسی', 'English'], horizontal=True)
+lang_opt = st.sidebar.radio("🌐 Language / زبان سیستم", ['فارسی', 'English'], horizontal=True)
 L = 'fa' if lang_opt == 'فارسی' else 'en'
 T = TEXTS[L]
 
-# Dynamic CSS for RTL/LTR support and clean UI
+# اعمال استایل راست‌چین/چپ‌چین به صورت داینامیک
 st.markdown(f"""
 <style>
-    .main {{ direction: {T['dir']}; }}
-    h1, h2, h3, p, div, span, label, .stMarkdown {{ 
-        text-align: {'right' if L == 'fa' else 'left'} !important; 
-        font-family: '{T['font']}', sans-serif !important; 
-    }}
-    .stSlider {{ direction: ltr !important; }}
-    .stSlider label {{ direction: {T['dir']} !important; width: 100%; text-align: {'right' if L == 'fa' else 'left'} !important; }}
-    .stSelectbox div[data-testid="stMarkdownContainer"] {{ direction: {T['dir']}; }}
-    
-    /* Custom Card Style for Results */
-    .result-card {{
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }}
+    .main {{ direction: {T['dir']}; font-family: {T['font']}, sans-serif; }}
+    h1, h2, h3, p, label {{ text-align: {'right' if L == 'fa' else 'left'} !important; }}
+    .stButton>button {{ background-color: #2c3e50; color: white; border-radius: 8px; height: 50px; font-weight: bold; font-size: 16px; }}
+    .stButton>button:hover {{ background-color: #34495e; color: #f1c40f; }}
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. Model Loader
+# 2. بارگذاری موتور هوش مصنوعی (مدل‌ها)
 # ==========================================
 @st.cache_resource
-def load_models():
-    # Loading models generated by prediction.ipynb
-    models = {}
-    model_files = {'lgb': 'lgb_model.pkl', 'xgb': 'xgb_model.pkl'}
+def load_ai_engine():
+    try:
+        with open(os.path.join(BASE_DIR, 'models_dict.pkl'), 'rb') as f:
+            models = pickle.load(f)
+        with open(os.path.join(BASE_DIR, 'target_encoder.pkl'), 'rb') as f:
+            encoder = pickle.load(f)
+        with open(os.path.join(BASE_DIR, 'features_list.pkl'), 'rb') as f:
+            features = pickle.load(f)
+        return models, encoder, features
+    except Exception as e:
+        return None, None, None
+
+models_dict, target_encoder, features_list = load_ai_engine()
+
+if models_dict is None:
+    st.error("❌ سیستم قادر به بارگذاری هسته هوش مصنوعی نیست. فایل‌های pkl را بررسی کنید.")
+    st.stop()
+
+# ==========================================
+# 3. پنل تنظیمات ورودی (Sidebar)
+# ==========================================
+st.sidebar.header(T['sb_title'])
+selected_model = st.sidebar.selectbox("🧠 الگوریتم پردازشی:", list(models_dict.keys()))
+st.sidebar.markdown("---")
+
+col_sb1, col_sb2 = st.sidebar.columns(2)
+with col_sb1:
+    speed = st.slider("سرعت (mph)", 10, 70, 30, step=10)
+    hour = st.slider("ساعت (0-23)", 0, 23, 14)
+    # اضافه شدن نام ماه‌ها
+    month = st.selectbox(T['lbl_month'], range(1, 13), index=5, format_func=lambda x: f"{T['months'][x]} ({x})")
     
-    for name, filename in model_files.items():
-        if os.path.exists(filename):
-            try:
-                with open(filename, 'rb') as f:
-                    models[name] = pickle.load(f)
-            except:
-                pass
-    return models
+with col_sb2:
+    # اضافه شدن نام روزهای هفته
+    day = st.selectbox(T['lbl_day'], range(1, 8), format_func=lambda x: T['days'][x])
+    area = st.radio("بافت منطقه", [1, 2], format_func=lambda x: "شهری" if x==1 else "روستایی", horizontal=True)
 
-models = load_models()
+light = st.sidebar.selectbox("وضعیت روشنایی", [1, 2, 3], format_func=lambda x: {1:"روز (روشن)", 2:"شب (با چراغ)", 3:"شب (تاریک مطلق)"}[x])
+weather = st.sidebar.selectbox("شرایط جوی", [1, 2, 3, 4], format_func=lambda x: {1:"صاف", 2:"بارانی", 3:"برفی", 4:"مه‌آلود"}[x])
+road_surface = st.sidebar.selectbox("وضعیت سطح جاده", [1, 2, 3, 4, 5], format_func=lambda x: {1:"خشک", 2:"خیس", 3:"برف", 4:"یخ‌زده", 5:"آب‌گرفتگی"}[x])
 
 # ==========================================
-# 3. Main Interface & Inputs
+# 4. هسته پردازشی و پیش‌بینی
 # ==========================================
-st.title(T['header_title'])
-st.caption(T['header_subtitle'])
-st.markdown(T['project_desc'], unsafe_allow_html=True)
+st.title(T['header'])
+st.caption(T['subheader'])
 st.divider()
 
-st.sidebar.header(T['sb_title'])
-
-def get_inputs():
-    # Feature 1: Day of Week
-    day_idx = st.sidebar.selectbox(T['lbl_day'], options=range(7), format_func=lambda x: T['days'][x])
+if st.button(T['btn_predict'], use_container_width=True):
     
-    # Feature 2: Road Type
-    road_key = st.sidebar.selectbox(T['lbl_road'], list(T['roads'].keys()))
+    # 💡 مهندسی ویژگی‌ها (Feature Engineering)
+    is_weekend = 1 if day in [6, 7] else 0  
+    speed_light_inter = speed * light       
     
-    # Feature 3: Speed Limit
-    speed = st.sidebar.slider(T['lbl_speed'], 10, 70, 30, step=10)
+    # شبیه‌سازی مختصات برای جلوگیری از بایاس مکانی مدل
+    rand_lat = np.random.uniform(51.0, 54.0)
+    rand_lon = np.random.uniform(-2.0, 1.0)
     
-    # Feature 4: Light Conditions
-    light_key = st.sidebar.selectbox(T['lbl_light'], list(T['lights'].keys()))
-    
-    # Feature 5: Weather Conditions
-    weather_key = st.sidebar.selectbox(T['lbl_weather'], list(T['weathers'].keys()))
-    
-    # Feature 6: Area Type
-    area_key = st.sidebar.radio(T['lbl_area'], list(T['areas'].keys()), horizontal=True)
-    
-    # Feature 7: Hour
-    hour = st.sidebar.slider(T['lbl_hour'], 0, 23, 14)
-    
-    st.sidebar.markdown("---")
-    compare_mode = st.sidebar.checkbox(T['lbl_comp'])
-
-    # Dataframe construction matching notebook features exactly
-    data = {
-        'Day_of_Week': day_idx,
-        'Road_Type': T['roads'][road_key],
+    # تجمیع داده‌ها در قالب استاندارد
+    raw_data = {
+        'Latitude': rand_lat,
+        'Longitude': rand_lon,
         'Speed_limit': speed,
-        'Light_Conditions': T['lights'][light_key],
-        'Weather_Conditions': T['weathers'][weather_key],
-        'Urban_or_Rural_Area': T['areas'][area_key],
-        'Hour': hour
+        'Light_Conditions': light,
+        'Weather_Conditions': weather,
+        'Road_Surface_Conditions': road_surface,
+        'Urban_or_Rural_Area': area,
+        'Hour': hour,
+        'Month': month,
+        'DayOfWeek': day,
+        'IsWeekend': is_weekend,
+        'Speed_Light_Inter': speed_light_inter
     }
+
+    # ساخت دیتافریم و تبدیل اجباری به Float برای امنیت اجرای درخت تصمیم
+    input_data = pd.DataFrame([raw_data], columns=features_list).astype(float)
+
+    # اجرای مدل انتخابی
+    model = models_dict[selected_model]
+    probs = model.predict_proba(input_data)[0]
     
-    # Correct column order as per training
-    cols = ['Day_of_Week', 'Road_Type', 'Speed_limit', 'Light_Conditions', 'Weather_Conditions', 'Urban_or_Rural_Area', 'Hour']
-    return pd.DataFrame([data])[cols], compare_mode
+    # استخراج احتمالات بر اساس ایندکس ثابت مدل شما (0:Fatal, 1:Serious, 2:Slight)
+    p_fatal = probs[0]
+    p_serious = probs[1]
+    p_slight = probs[2]
 
-input_df, show_compare = get_inputs()
+    # ==========================================
+    # 5. منطق ارزیابی ریسک (Thresholding)
+    # ==========================================
+    # حل مشکل Imbalanced Data با تعریف آستانه حساسیت
+    if p_fatal > 0.04:         # آستانه 4 درصد برای تصادف مرگبار
+        severity_label = 'Fatal'
+        pred_val = p_fatal
+        alert_color = "red"
+    elif p_serious > 0.15:     # آستانه 15 درصد برای جراحت جدی
+        severity_label = 'Serious'
+        pred_val = p_serious
+        alert_color = "orange"
+    else:                      # شرایط نرمال
+        severity_label = 'Slight'
+        pred_val = p_slight
+        alert_color = "green"
 
-# ==========================================
-# 4. Prediction Logic & Visualization
-# ==========================================
-col_main, col_res = st.columns([2, 1])
-
-if models.get('lgb'):
-    # Main Prediction
-    lgb_probs = models['lgb'].predict_proba(input_df)[0]
-    lgb_pred = np.argmax(lgb_probs)
+    # ==========================================
+    # 6. نمایش گرافیکی نتایج (داشبورد)
+    # ==========================================
+    col_chart, col_info = st.columns([2, 1])
     
-    with col_main:
-        st.subheader(T['res_main'])
+    with col_chart:
+        st.markdown(f"### 📊 {T['res_head']}")
         
-        # Professional Plotly Chart
-        colors = ['#27ae60', '#f39c12', '#c0392b'] # Green, Orange, Red
-        fig = go.Figure(data=[go.Bar(
-            x=T['risk_levels'],
-            y=lgb_probs,
-            marker_color=colors,
-            text=[f"{p*100:.1f}%" for p in lgb_probs],
+        # رسم نمودار میله‌ای با Plotly
+        fig = go.Figure(go.Bar(
+            x=T['risk_levels'], 
+            y=[p_fatal, p_serious, p_slight],
+            marker_color=['#e74c3c', '#f1c40f', '#2ecc71'],
+            text=[f"{p_fatal*100:.2f}%", f"{p_serious*100:.2f}%", f"{p_slight*100:.2f}%"], 
             textposition='auto',
-        )])
+            hovertemplate="<b>%{x}</b><br>Probability: %{y:.2%}<extra></extra>"
+        ))
+        
         fig.update_layout(
-            yaxis_title="Probability",
-            margin=dict(l=20, r=20, t=30, b=20),
-            height=350,
+            height=380, 
+            margin=dict(t=30, b=30, l=0, r=0),
             paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)'
+            plot_bgcolor='rgba(0,0,0,0)',
+            yaxis=dict(title="Probability", gridcolor='rgba(128,128,128,0.2)'),
+            xaxis=dict(title="Severity Class")
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    with col_res:
-        # Result Card
-        st.markdown(f"### {T['risk_levels'][lgb_pred]}")
+    with col_info:
+        st.markdown(f"### 🎯 نتیجه نهایی")
         
-        msg = T['risk_msgs'][lgb_pred]
-        if lgb_pred == 2:
-            st.error(msg)
-        elif lgb_pred == 1:
-            st.warning(msg)
+        if severity_label == 'Fatal':
+            st.error("🚨 هشدار: ریسک مرگبار (Fatal)")
+            st.caption("سیستم هوشمند به دلیل عبور احتمال فوت از مرز بحرانی (۴٪)، این شرایط را به شدت پرخطر طبقه‌بندی کرده است.")
+        elif severity_label == 'Serious':
+            st.warning("⚠️ هشدار: جراحت جدی (Serious)")
+            st.caption("احتمال بالای جراحات جدی. نیاز به اقدامات پیشگیرانه در این شرایط محیطی احساس می‌شود.")
         else:
-            st.success(msg)
+            st.success("✅ وضعیت: کم‌خطر (Slight)")
+            st.caption("بر اساس الگوهای ترافیکی، این شرایط در دسته تصادفات خسارتی و سطحی قرار می‌گیرد.")
             
-        st.metric("Fatal Prob.", f"{lgb_probs[2]*100:.1f}%")
+        st.divider()
+        st.markdown(f"**{T['metrics_title']}:**")
+        st.metric(label="الگوریتم فعال", value=selected_model)
         
-        # Comparison Section
-        if show_compare and models.get('xgb'):
-            st.divider()
-            st.markdown(f"**{T['res_comp']}**")
-            xgb_pred = models['xgb'].predict(input_df)[0]
-            st.info(f"XGBoost: {T['risk_levels'][xgb_pred]}")
-
-    # ==========================================
-    # 5. Smart Recommendations (Interactive)
-    # ==========================================
-    if lgb_pred > 0: # If Serious or Fatal
-        st.markdown("---")
-        st.subheader(T['rec_head'])
-        
-        # Speed Reduction Simulation
-        curr_speed = input_df['Speed_limit'][0]
-        if curr_speed > 20:
-            sim_df = input_df.copy()
-            sim_df['Speed_limit'] = curr_speed - 10
-            new_prob = models['lgb'].predict_proba(sim_df)[0][2]
-            diff = (lgb_probs[2] - new_prob) * 100
-            if diff > 1.0:
-                st.info(T['rec_speed'].format(curr_speed - 10, diff), icon="📉")
-
-        # Infrastructure (Lighting) Simulation
-        if input_df['Light_Conditions'][0] == 3: # Darkness No Lights
-            sim_df_l = input_df.copy()
-            sim_df_l['Light_Conditions'] = 2 # Lit
-            sim_df_l['Speed_limit'] = curr_speed
-            new_prob_l = models['lgb'].predict_proba(sim_df_l)[0][2]
-            diff_l = (lgb_probs[2] - new_prob_l) * 100
-            if diff_l > 1.0:
-                st.success(T['rec_light'].format(diff_l), icon="💡")
-
-else:
-    st.error("Model files not detected. Please run the training notebook first.")
-
-# ==========================================
-# 6. Footer
-# ==========================================
 st.markdown("---")
-st.markdown(f"""
-<div style="text-align: center; color: #7f8c8d; font-size: 0.9em; direction: {T['dir']};">
-    {T['footer']}
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align: center; color: #7f8c8d; direction: {T['dir']};'>{T['footer']}</div>", unsafe_allow_html=True)
